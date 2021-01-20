@@ -10,6 +10,26 @@ namespace DemoCleaner3
     static class Program
     {
 
+        static String NormalizeAttributeName(String name) {
+            String output = "";
+            if (name.Length == 0 || (name[0] >= '0' && name[0] <= '9') )
+            {
+                output += "_";
+            }
+            foreach (var c in name)
+            {
+                if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') ||(c >= 'A' && c <= 'Z') || (c == '-'))
+                {
+                    output += c;
+                }
+                else
+                {
+                    output += "_";
+                }
+            }
+            return output;
+        }
+
         static XmlNode ExportXml(XmlDocument doc, Dictionary<String, System.Collections.Generic.Dictionary<string, string>> map)
         {
             var node = doc.CreateNode("element", "demoFile", "");
@@ -18,7 +38,7 @@ namespace DemoCleaner3
                 var el = doc.CreateNode("element", item.Key, "");
                 foreach(var subItem in item.Value)
                 {
-                    var attr = doc.CreateAttribute(subItem.Key.Replace(' ', '-'));
+                    var attr = doc.CreateAttribute(NormalizeAttributeName(subItem.Key));
                     attr.Value = subItem.Value;
                     el.Attributes.Append(attr);
                 }
